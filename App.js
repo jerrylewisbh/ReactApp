@@ -1,13 +1,53 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Button, StyleSheet, TextInput } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 
 class App extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      phraseText: '',
+      img: require('./src/closed_cookie.png')
+    }
+
+    this.openCookie = this.openCookie.bind(this)
+
+    this.phrases = [
+      "A beautiful, smart, and loving person will be coming into your life.",
+      "A dubious friend may be an enemy in camouflage.",
+      "A faithful friend is a strong defense.",
+      "A feather in the hand is better than a bird in the air.",
+      "A fresh start will put you on your way.",
+      "A friend asks only for your time not your money.",
+      "A friend is a present you give yourself.",
+      "A gambler not only will lose what he has, but also will lose what he doesn’t have."
+    ]
+
+  }
+
+  openCookie() {
+    let randomNumber = Math.floor(Math.random() * this.phrases.length);
+    this.setState({
+      phraseText: ' "' + this.phrases[randomNumber] + '" ',
+      img: require('./src/open_cookie.png')
+    })
+
+  }
+
   render() {
     return (
-      <View style={{ flex: 1, backgroundColor: '#B2B2B2' }}>
-        <Text style={{ color: 'red', fontSize: 25 }}> Olá Mundo </Text>
-        <RandomImage name={"My Text"} width={300} height={300} />
+      <View style={styles.container}>
+        <Image
+          source={this.state.img}
+          style={styles.img}
+        />
+        <Text style={styles.phraseText}>{this.state.phraseText}</Text>
+        <TouchableOpacity style={styles.button} onPress={this.openCookie}>
+          <View style={styles.buttonArea}>
+            <Text style={styles.buttonText} >Open Cookie</Text>
+          </View>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -15,61 +55,44 @@ class App extends Component {
 
 export default App;
 
-class RandomImage extends Component {
-
-  constructor(props) {
-    super(props)
-    this.state = {
-      textColor: '#FF0000',
-      text: this.props.name
-    }
-
-    this.changeColor = this.changeColor.bind(this)
-    this.onTextChanged = this.onTextChanged.bind(this)
-  }
-  changeColor() {
-    var ColorCode = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
-    this.setState({ textColor: ColorCode })
-  }
-
-  onTextChanged(text) {
-    this.setState({ text: text })
-  }
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <Button title="Change Text Color" onPress={this.changeColor} />
-        <Image
-          source={{ uri: 'https://picsum.photos/200/300' }}
-          style={{ width: this.props.width, height: this.props.height }}
-        />
-        <Text style={[{ color: this.state.textColor }, styles.text]}> {this.state.text}</Text>
-        <TextInput style={styles.input}
-          placeholder="Type any text"
-          underlineColorAndroid="transparent"
-          onChangeText={this.onTextChanged}
-        />
-      </View>
-    )
-  }
-}
-
-
 const styles = StyleSheet.create({
   container: {
-    marginTop: 40,
-    flex: 1
-  }, input: {
-    margin: 10,
-    fontSize: 15,
-    borderWidth: 1,
-    borderColor: '#222',
-    padding: 10
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center"
   },
-  text: {
-    textAlign: "center",
-    fontSize: 30
+  img: {
+    width: 250,
+    height: 250
+  },
+  phraseText: {
+    fontSize: 20,
+    color: '#dd7b22',
+    margin: 30,
+    fontStyle: "italic",
+    textAlign: "center"
+  },
+  button: {
+    width: 230,
+    height: 50,
+    borderWidth: 2,
+    borderColor: '#dd7b22',
+    borderRadius: 25
+
+  },
+  buttonArea: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center"
+
+  },
+  buttonText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: '#dd7b22'
+
   }
+
 });
 
