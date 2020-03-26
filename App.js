@@ -1,75 +1,125 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Button, StyleSheet, TextInput } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 
 class App extends Component {
-  render() {
-    return (
-      <View style={{ flex: 1, backgroundColor: '#B2B2B2' }}>
-        <Text style={{ color: 'red', fontSize: 25 }}> Olá Mundo </Text>
-        <RandomImage name={"My Text"} width={300} height={300} />
-      </View>
-    );
-  }
-}
-
-export default App;
-
-class RandomImage extends Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
-      textColor: '#FF0000',
-      text: this.props.name
+      currentTime: 0,
+      lasTime: null,
+      label: 'Start'
     }
 
-    this.changeColor = this.changeColor.bind(this)
-    this.onTextChanged = this.onTextChanged.bind(this)
-  }
-  changeColor() {
-    var ColorCode = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
-    this.setState({ textColor: ColorCode })
+
+    this.timer = null;
+
+    this.Start = this.Start.bind(this);
+    this.Clear = this.Clear.bind(this);
   }
 
-  onTextChanged(text) {
-    this.setState({ text: text })
+
+  Start() {
+    if (this.timer == null) {
+      this.timer = setInterval(() => {
+        this.setState({ currentTime: this.state.currentTime + 0.1 });
+      }, 100);
+
+      this.setState({ label: 'Pause' });
+    } else {
+      clearInterval(this.timer);
+      this.timer = null;
+      this.setState({ label: 'Start' });
+    }
+  }
+
+  Clear() {
+    clearInterval(this.timer);
+    this.timer = null;
+    this.setState({ currentTime: 0, label: 'Start', lastTime: this.state.currentTime });
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <Button title="Change Text Color" onPress={this.changeColor} />
         <Image
-          source={{ uri: 'https://picsum.photos/200/300' }}
-          style={{ width: this.props.width, height: this.props.height }}
+          source={require('./src/cronometer.png')}
+          style={styles.cronometer}
         />
-        <Text style={[{ color: this.state.textColor }, styles.text]}> {this.state.text}</Text>
-        <TextInput style={styles.input}
-          placeholder="Type any text"
-          underlineColorAndroid="transparent"
-          onChangeText={this.onTextChanged}
-        />
+        <Text style={styles.timer}>{this.state.currentTime.toFixed(1)}</Text>
+
+        <View style={styles.btnArea}>
+
+          <TouchableOpacity style={styles.btn}>
+            <Text style={styles.btnText} onPress={this.Start}>{this.state.label}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.btn} onPress={this.Clear}>
+            <Text style={styles.btnText}>Clear</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.lastTimeArea}>
+          <Text style={styles.lastTimeText}>
+            {this.state.lastTime > 0 ? 'Last time: ' + this.state.lastTime.toFixed(2) : ''}
+          </Text>
+        </View>
+
+
       </View>
-    )
+    );
   }
 }
 
 
+
+
 const styles = StyleSheet.create({
   container: {
-    marginTop: 40,
-    flex: 1
-  }, input: {
-    margin: 10,
-    fontSize: 15,
-    borderWidth: 1,
-    borderColor: '#222',
-    padding: 10
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: '#00aeef'
   },
-  text: {
-    textAlign: "center",
-    fontSize: 30
+  timer: {
+    marginTop: -160,
+    color: '#fff',
+    fontSize: 65,
+    fontWeight: "bold"
+  },
+  btnArea: {
+    flexDirection: 'row',
+    marginTop: 70,
+    height: 40
+  },
+  btnText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: '#00aeff'
+
+  },
+  btn: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: '#fff',
+    height: 40,
+    margin: 17,
+    borderRadius: 9
+  },
+  lastTimeArea: {
+    marginTop: 40
+
+  },
+  lastTimeText: {
+    fontSize: 25,
+    fontStyle: "italic",
+    color: '#fff'
   }
+
 });
+
+
+export default App;
 
